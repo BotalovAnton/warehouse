@@ -1,0 +1,1014 @@
+openapi: 3.0.3
+info:
+  title: warehouse
+  description: Сервис по работе со складом
+  contact: {}
+  version: 1.0.0
+servers:
+  - url: 'https://localhost:8080'
+tags:
+  - name: Product
+  - name: Order
+  - name: User
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      summary: добавление нового пользователя системы
+      operationId: addUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '201':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: string
+    put:
+      tags:
+        - User
+      summary: обновление данных пользователя системы
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: query
+          description: Ид зарегистрированного пользователя
+          required: true
+          style: simple
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+        '400':
+          description: Некорректный запрос
+          content:
+            application/json:
+              schema:
+                type: string
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                type: string
+  /init:
+    post:
+      tags:
+        - OnboardingApi
+      summary: Старт нового чата онбординга
+      operationId: initPost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateRegistrationChatRequest'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Confirmation'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /registration/{id}/business_remote_registration_status:
+    post:
+      tags:
+        - OnboardingApi
+      summary: Передача статуса регистрации бизнеса
+      parameters:
+        - name: id
+          in: path
+          description: Ид зарегистрированного клиента(id_remote_registration)
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoteRegistrationStatusRequest'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RemoteRegistrationStatusResponse'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - OnboardingApi
+      summary: Запрос статусов регистрации бизнеса
+      parameters:
+        - name: id
+          in: path
+          description: Ид зарегистрированного клиента(id_remote_registration)
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RemoteRegistrationStatusResponse'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /offices:
+    get:
+      tags:
+        - OnboardingApi
+      summary: Получение списка офисов
+      operationId: officesGet
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offices'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /organization/contacts:
+    get:
+      tags:
+        - OnboardingApi
+      summary: Получение контактных данных организации
+      operationId: organizationContactsGet
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationContacts'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - OnboardingApi
+      summary: Обновление контактных данных организации
+      operationId: organizationContactsUpdatePost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationContacts'
+      responses:
+        '200':
+          description: Успешный запрос
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /organization/contacts/send:
+    post:
+      tags:
+        - OnboardingApi
+      summary: отправка контактных данных организации
+      operationId: organizationContactsSendPost
+      responses:
+        '200':
+          description: Успешный запрос
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /relation_person:
+    post:
+      tags:
+        - OnboardingApi
+      summary: добавление связанного лица
+      operationId: relationPersonCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationPerson'
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: string
+                description: id связанного лица
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - OnboardingApi
+      summary: обновление связанного лица
+      operationId: relationPersonUpdate
+      parameters:
+        - name: last_step
+          in: query
+          description: завершение обновления связанного лица
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationPerson'
+      responses:
+        '200':
+          description: Успешный запрос
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      tags:
+        - OnboardingApi
+      summary: получение списка связанных лиц
+      operationId: relationPersonListGet
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  allOf:
+                    - $ref: '#/components/schemas/RelationPerson'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - OnboardingApi
+      summary: удаление связанного лица
+      operationId: relationPersonDelete
+      parameters:
+        - name: id
+          in: query
+          description: id удаляемого связанного лица
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Успешный запрос
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /prospect:
+    get:
+      tags:
+        - OnboardingApi
+      summary: получение информации по проспекту
+      operationId: prospectGet
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Prospect'
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /registration/history:
+    post:
+      tags:
+        - OnboardingApi
+      summary: добавление метрики по онбордингу
+      operationId: registrationHistoryPost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationStep'
+      responses:
+        '200':
+          description: Успешный запрос
+        '500':
+          description: Ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    UserDto:
+      type: object
+      description: Пользователь системы
+      properties:
+        id:
+          type: integer
+        login:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        patronymic:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        position:
+          type: string
+        created:
+          type: string
+          format: date-time
+        account_is_locked:
+          type: boolean
+        password_expiration_date:
+          type: string
+          format: date-time
+
+
+    ChatHistoryResponse:
+      type: object
+      description: Список сообщений
+      properties:
+        message_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/AbstractChatMessage'
+    AbstractChatMessage:
+      type: object
+      description: Сообщение в чате
+      properties:
+        title:
+          type: string
+        sender:
+          type: string
+        kind:
+          type: string
+        prospect_id:
+          type: string
+      discriminator:
+        propertyName: kind
+        mapping:
+          getOrgList: '#/components/schemas/TextChatMessage'
+          textChatMessage: '#/components/schemas/TextChatMessage'
+          inputRequestChatMessage: '#/components/schemas/InputRequestChatMessage'
+          branchSelectChatMessage: '#/components/schemas/BranchSelectChatMessage'
+          exclusiveChoiceChatMessage: '#/components/schemas/ExclusiveChoiceChatMessage'
+    TextChatMessage:
+      type: object
+      description: Текстовое сообщение не требующее ответа
+      allOf:
+        - $ref: '#/components/schemas/AbstractChatMessage'
+        - type: object
+    InputRequestChatMessage:
+      type: object
+      description: Текстовое сообщение требующее ответа
+      allOf:
+        - $ref: '#/components/schemas/AbstractChatMessage'
+        - type: object
+    BranchSelectChatMessage:
+      type: object
+      description: Выбор отделения на карте
+      properties:
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/BranchType'
+      allOf:
+        - $ref: '#/components/schemas/AbstractChatMessage'
+        - type: object
+    ExclusiveChoiceChatMessage:
+      type: object
+      description: Выбор одного из предложенных вариантов
+      properties:
+        choices:
+          type: array
+          items:
+            type: string
+      allOf:
+        - $ref: '#/components/schemas/AbstractChatMessage'
+        - type: object
+    InitiateRegistrationChatRequest:
+      type: object
+      description: Номер и параметры для верификации
+      properties:
+        phone:
+          type: string
+          description: номер
+        parameters_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameters'
+    BranchType:
+      type: object
+      description: Отделение банка
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        city:
+          type: string
+        phone:
+          type: string
+        operating_time:
+          type: string
+        address:
+          type: string
+        related_metro_stations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedMetroStation'
+        longitude:
+          type: string
+        latitude:
+          type: string
+    RelatedMetroStation:
+      type: object
+      description: Станция метро рядом
+      properties:
+        distance:
+          type: string
+        station:
+          $ref: '#/components/schemas/MetroStation'
+    MetroStation:
+      type: object
+      description: Станция метро
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        line:
+          $ref: '#/components/schemas/MetroLine'
+    MetroLine:
+      type: object
+      description: Линия метро
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+    Confirmation:
+      type: object
+      description: Объект для подтверждения операций
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - SMS
+            - NONE
+        attempts:
+          type: number
+        message:
+          type: string
+        expiresIn:
+          type: number
+        prospect_id:
+          type: string
+    Parameters:
+      type: object
+      description: Параметры для верификации
+      properties:
+        value:
+          type: string
+        name:
+          type: string
+    Registration:
+      type: object
+      description: Зарегистрированное лицо
+      properties:
+        id:
+          type: string
+        created:
+          type: string
+          format: date-time
+        phone_number:
+          type: string
+        full_name:
+          type: string
+        short_name:
+          type: string
+        short_name_en:
+          type: string
+        inn:
+          type: string
+        kpp:
+          type: string
+        ogrn:
+          type: string
+        okopf_code:
+          type: string
+        okopf_name:
+          type: string
+        okved_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Okved'
+        person_fio:
+          type: string
+        person_position:
+          type: string
+        reg_authority:
+          type: string
+        reg_authority_address:
+          type: string
+        date_first_reg:
+          type: string
+          format: date-time
+        okogu:
+          type: string
+        okato:
+          type: string
+        oktmo:
+          type: string
+        okfs:
+          type: string
+        address:
+          type: string
+        actual_address:
+          type: string
+        mailing_address:
+          type: string
+        organization_email:
+          type: string
+        organization_phone_number:
+          type: string
+        status_code:
+          type: string
+        coowners_contain_legal_entity:
+          type: boolean
+        acquisition_channel:
+          type: string
+        acquisition_url:
+          type: string
+        search_resolution:
+          type: string
+        prospect_id:
+          type: string
+        client_name:
+          type: string
+        client_surname:
+          type: string
+        client_patronymic:
+          type: string
+        client_email:
+          type: string
+        current_activity:
+          type: string
+        branch_code:
+          type: string
+        crmId_legal:
+          type: string
+        crmId_natural:
+          type: string
+        bis_id:
+          type: string
+        status:
+          type: string
+        department_code:
+          type: string
+        account_number:
+          type: string
+        chatmode:
+          type: string
+        utmz:
+          type: string
+        code:
+          type: string
+        terms_accepted:
+          type: boolean
+        source:
+          type: string
+        prospect_onboarding_status:
+          type: string
+        is_organization_contactInformation_sent_to_siebel:
+          type: boolean
+        okpo:
+          type: string
+        gclid:
+          type: string
+        utm_medium:
+          type: string
+        utm_source:
+          type: string
+        utm_campaign:
+          type: string
+        utm_term:
+          type: string
+        referrer:
+          type: string
+        utm_content:
+          type: string
+        user_agent:
+          type: string
+        is_business_registered:
+          type: boolean
+        yclid:
+          type: string
+        ym_uid:
+          type: string
+    Okved:
+      type: object
+      description: Оквэд
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        is_main:
+          type: integer
+        registration_id:
+          type: string
+    Offices:
+      type: object
+      description: Список офисов
+      properties:
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/BranchType'
+    Error:
+      type: object
+      properties:
+        id:
+          type: string
+          description: идентификатор ошибки
+        type:
+          type: string
+          enum:
+            - UNEXPECTED
+            - INVALID_CREDENTIALS
+            - INVALID_LOGIN
+            - INVALID_TOKEN
+            - WEAK_PASSWORD
+            - REVERT_DOCUMENT_ERROR
+            - OTP_EXPIRED
+            - FORBIDDEN
+            - CONFIRM_ATTEMPTS_EXCEEDED
+            - VALIDATION_ERROR
+            - EMPTY_STATEMENT_ERROR
+            - INVALID_SESSION
+            - PASSWORD_TIMED_OUT
+            - LOW_BALANCE_ERROR
+            - END_OF_DAY_ERROR
+            - IN_DEVELOPING_ERROR
+            - IMPORT_DOCUMENT_ERROR
+            - ESB_ERROR
+            - ESB_TIMEOUT
+        message:
+          description: сообщение об ошибке
+          type: string
+    RemoteRegistrationStatusRequest:
+      type: object
+      description: запрос на сохранение статуса удаленной регистрации
+      properties:
+        crm_id:
+          type: string
+          description: ID клиента в CRM Банка
+        status_create_date:
+          type: string
+          format: date-time
+          description: Дата-время создания статуса в Regme
+        status_code:
+          type: string
+          description: Код статуса
+        status_text:
+          type: string
+          description: Текст статуса
+    RemoteRegistrationStatusResponse:
+      type: object
+      description: ответ на сохранение статуса удаленной регистрации
+      properties:
+        id:
+          type: string
+          description: ID созданной записи в БД ДБО
+        id_remote_registration:
+          type: string
+          description: ID записи проспекта из таблицы remote_registration
+        crm_id:
+          type: string
+          description: ID клиента в CRM Банка
+        status_create_date:
+          type: string
+          format: date-time
+          description: Дата-время создания статуса в Regme
+        status_code:
+          type: string
+          description: Код статуса
+        status_text:
+          type: string
+          description: Текст статуса
+    OrganizationContacts:
+      type: object
+      description: контактные данные организации
+      properties:
+        reg_address:
+          type: string
+        actual_address:
+          type: string
+        mailing_address:
+          type: string
+        email:
+          type: string
+        phone_number:
+          type: string
+        sent_to_siebel:
+          type: boolean
+          default: false
+    RelationPerson:
+      type: object
+      description: связанное лицо
+      properties:
+        id:
+          type: string
+        relation_type:
+          type: array
+          items:
+            enum:
+              - ENTREPRENEUR
+              - REPRESENTATIVE
+              - FOUNDER
+              - BENEFICIAL_OWNER
+        email:
+          type: string
+        phone_number:
+          type: string
+        name:
+          type: string
+        surname:
+          type: string
+        patronymic:
+          type: string
+        date_of_birth:
+          type: string
+          format: date-time
+        place_of_birth:
+          type: string
+        citizenship:
+          type: string
+        passport:
+          $ref: '#/components/schemas/Passport'
+        registration_address:
+          type: string
+        residence_address:
+          type: string
+        mailing_address:
+          type: string
+        completed:
+          type: boolean
+          default: false
+        file_id_list:
+          type: array
+          items:
+            type: string
+    Passport:
+      type: object
+      description: данные паспорта
+      properties:
+        series:
+          type: string
+        number:
+          type: string
+        issue_date:
+          type: string
+          format: date-time
+        issued:
+          type: string
+        unit_code:
+          type: string
+    Prospect:
+      type: object
+      description: Информация о проспекте
+      properties:
+        organization_name:
+          type: string
+        inn:
+          type: string
+        ogrn:
+          type: string
+        isBusinessRegistered:
+          type: boolean
+          default: false
+        okopf_name:
+          type: string
+        account_number:
+          type: string
+        reserve_expiration_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+        branch_info:
+          $ref: '#/components/schemas/BranchInfo'
+        department_info:
+          $ref: '#/components/schemas/DepartmentInfo'
+        manager:
+          $ref: '#/components/schemas/Manager'
+    BranchInfo:
+      type: object
+      description: информация о филиале
+      properties:
+        branch_name:
+          type: string
+        bic:
+          type: string
+        correspondent_account:
+          type: string
+    DepartmentInfo:
+      type: object
+      description: информация об отделении
+      properties:
+        department_name:
+          type: string
+        department_code:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+        coord_latitude:
+          type: string
+        coord_longitude:
+          type: string
+    Manager:
+      type: object
+      description: контактные данные клиентского менеджера
+      properties:
+        fio:
+          type: string
+        email:
+          type: string
+    RegistrationStep:
+      type: object
+      description: данные по действию пользователя
+      properties:
+        registration_id:
+          type: string
+          description: id remote_registration
+        step_name:
+          type: string
+        info:
+          type: string
+        session_id:
+          type: string
+        user_login:
+          type: string
+        entity_id:
+          type: string
+        message:
+          type: string
+        sender:
+          type: string
+          enum:
+            - BACK
+            - FRONT
+            - CLIENT
+        device_id:
+          type: string
+        os_name:
+          type: string
+        os_version:
+          type: string
+        os_platform:
+          type: string
+        device:
+          type: string
+        model:
+          type: string
+        brand:
+          type: string
+        product:
+          type: string
+        release:
+          type: string
+        display:
+          type: string
+        cpu_abi:
+          type: string
+        cpu_abi2:
+          type: string
+        device_info:
+          type: string
+        hardware:
+          type: string
+        internal_id:
+          type: string
+        manufacturer:
+          type: string
+        serial:
+          type: string
+        device_user:
+          type: string
+        host:
+          type: string
+        time:
+          type: string
+          format: date-time
+        c_type:
+          type: string
+        c_name:
+          type: string
+        c_version:
+          type: string
+        c_engine:
+          type: string
+        c_engine_version:
+          type: string
+        phone:
+          type: string
+        inn:
+          type: string
+        file_id:
+          type: string
+        app_number:
+          type: string
+        app_id:
+          type: string
+        stage_code_from:
+          type: string
+        stage_code_to:
+          type: string
+        proportal_prospect_id:
+          type: string
