@@ -16,6 +16,8 @@ import java.util.List;
 public class OrderDto {
     long id;
 
+    OffsetDateTime created;
+
     @JsonProperty("user_id")
     long userId;
 
@@ -29,7 +31,9 @@ public class OrderDto {
     String clientId;
 
     String uid;
-    OffsetDateTime term;
+
+    @JsonProperty("delivery_time")
+    OffsetDateTime deliveryTime;
     String status;
     String comment;
     Priority priority;

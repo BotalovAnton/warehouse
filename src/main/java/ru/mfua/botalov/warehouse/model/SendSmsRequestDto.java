@@ -10,9 +10,9 @@ import lombok.experimental.FieldDefaults;
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderItemDto {
-    long id;
-    @JsonProperty("product_id")
-    long productId;
-    int count;
+public class SendSmsRequestDto {
+    @JsonProperty("client_id")
+    String clientId;
+    String theme;
+    String text;
 }

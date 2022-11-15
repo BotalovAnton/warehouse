@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mfua.botalov.warehouse.model.ProductDto;
-import ru.mfua.botalov.warehouse.service.ProductService;
+import ru.mfua.botalov.warehouse.service.impl.ProductServiceImpl;
 
 import java.util.List;
 
@@ -22,25 +21,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductServiceImpl productService;
 
     @PostMapping
     public ResponseEntity<String> addProduct(@RequestBody ProductDto productDto) {
         return new ResponseEntity<>(productService.addProduct(productDto), HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<ProductDto> updateProduct(@RequestParam(name = "id") Long id, ProductDto productDto) {
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable(name = "id") Long id, ProductDto productDto) {
         return ResponseEntity.ok(productService.updateProduct(id, productDto));
     }
 
-    @GetMapping
-    public ResponseEntity<ProductDto> getProduct(@RequestParam(name = "id") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProduct(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(productService.getProduct(id));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteProduct(@RequestParam(name = "id") long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable(name = "id") Long id) {
         productService.deleteProduct(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -55,5 +54,4 @@ public class ProductController {
     public ResponseEntity<ProductDto> getProductByArticle(@PathVariable(name = "article") String article) {
         return ResponseEntity.ok(productService.getProductByArticle(article));
     }
-
 }

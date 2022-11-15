@@ -1,9 +1,12 @@
 package ru.mfua.botalov.warehouse.entity;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,11 +24,13 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode
 @ToString
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "product_order")
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
+    OffsetDateTime created;
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     UserEntity userEntity;
@@ -33,7 +38,7 @@ public class OrderEntity {
     String clientFio;
     String clientId;
     String uid;
-    OffsetDateTime term;
+    OffsetDateTime deliveryTime;
     String status;
     String comment;
     String priority;
